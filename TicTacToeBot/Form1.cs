@@ -17,6 +17,9 @@ namespace TicTacToeBot
 
             PreviousPlay = 'X';
             CurrentGameState = new GameState<char[,]>(GameBoard);
+
+            BoardTree = new(CurrentGameState, PreviousPlay);
+            BoardTree.GenerateTree(CurrentGameState, PreviousPlay);
         }
 
         private void Button_Click(object sender, EventArgs e)
@@ -42,10 +45,10 @@ namespace TicTacToeBot
             }
             else
             {
-                if (CurrentGameState.Score == 1)
-                { /*changecolor*/ }
-                else
-                { /*changecolor*/ }
+                //if (CurrentGameState.Score == 1)
+                //{ /*changecolor*/ }
+                //else
+                //{ /*changecolor*/ }
 
                 progressBar1.Value = 100;
             }
@@ -75,10 +78,7 @@ namespace TicTacToeBot
 
         private void CPUButton_Click(object sender, EventArgs e)
         {
-            BoardTree = new(CurrentGameState, PreviousPlay);
-            BoardTree.GenerateTree();
-
-            ;
+            
         }
     }
 }

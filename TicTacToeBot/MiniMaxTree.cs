@@ -17,32 +17,49 @@ namespace TicTacToeBot
             PreviousPlay = prevPlay;
         }
 
-        public void GenerateTree()
+        private char[,] GetBoard (GameState<T> gameState)
         {
-            if (PreviousPlay == 'X')
-            {
-                PreviousPlay = 'O';
-            }
-            else
-            {
-                PreviousPlay = 'X';
-            }
+            var gameBoard = new char[3, 3] { { ' ', ' ', ' ' }, { ' ', ' ', ' ' }, { ' ', ' ', ' ' } };
 
             for (int column = 0; column < 3; column++)
             {
                 for (int row = 0; row < 3; row++)
                 {
-                    var GameBoard = new char[3, 3] { { ' ', ' ', ' ' }, { ' ', ' ', ' ' }, { ' ', ' ', ' ' } };
-                    GameState<T> nextGameState = new(GameBoard);
-
-                    if (Root.PuzzlePieces[column, row] == ' ')
-                    {
-                        nextGameState.PuzzlePieces[column, row] = PreviousPlay;
-                        Root.NextLayer.Add(nextGameState);
-                    }
+                    gameBoard[column, row] = gameState.PuzzlePieces[column, row];
                 }
             }
 
+            return gameBoard;
+        }
+
+        public void GenerateTree(GameState<T> gameState, char previousPlay)
+        {
+            if (gameState.Score == 0)
+            {
+                if (previousPlay == 'X') 
+                { previousPlay = 'O'; }
+                else 
+                { previousPlay = 'X'; }
+
+                var gameBoard = new char[3, 3] { { ' ', ' ', ' ' }, { ' ', ' ', ' ' }, { ' ', ' ', ' ' } };
+                gameBoard = GetBoard(gameState);
+
+                for (int column = 0; column < 3; column++)
+                {
+                    for (int row = 0; row < 3; row++)
+                    {
+                        GameState<T> nextGameState = new(gameBoard);
+
+                        if (nextGameState.PuzzlePieces[column, row] == ' ')
+                        {
+                            nextGameState.PuzzlePieces[column, row] = previousPlay;
+                            gameState.NextLayer.Add(nextGameState);
+                            nextGameState.Parent = gameState;
+                            GenerateTree(nextGameState, previousPlay);
+                        }
+                    }
+                }
+            }
         }
     }
 }
