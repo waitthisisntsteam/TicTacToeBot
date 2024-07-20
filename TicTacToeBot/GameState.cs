@@ -14,7 +14,9 @@ namespace TicTacToeBot
         public List<GameState<T>> NextLayer;
 
         public char[,] PuzzlePieces;
-        public int Score => GetScore();
+        public int Score;
+
+        public char CurrentPlayer => GetPlayer();
 
         public GameState(char[,] puzzlePieces)
         {
@@ -29,6 +31,7 @@ namespace TicTacToeBot
                     PuzzlePieces[column, row] = puzzlePieces[column, row];
                 }
             }
+            Score = 0;
         }
 
         public int GetScore()
@@ -64,6 +67,28 @@ namespace TicTacToeBot
             }
 
             return 0;
+        }
+        public char GetPlayer()
+        {
+            int xCount = 0;
+            int oCount = 0;
+
+            for (int column = 0; column < 3; column++)
+            {
+                for (int row = 0; row < 3; row++)
+                {
+                    if (PuzzlePieces[column, row] == 'X') 
+                    { xCount++; }
+                    else if (PuzzlePieces[column, row] == 'O')
+                    { oCount++; }
+                }
+            }
+
+            if (xCount < oCount)
+            {
+                return 'X';
+            }
+            return 'O';
         }
     }
 }
