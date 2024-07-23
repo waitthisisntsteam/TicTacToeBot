@@ -32,9 +32,9 @@ namespace TicTacToeBot
             ;
         }
 
-        private void PlayBotMove(EventArgs e, List<GameState<char[,]>> path)
+        private void PlayBotMove(EventArgs e, GameState<char[,]> path)
         {
-            if (path == null || path.Count < MoveCount + 1)
+            if (path == null)
             {
                 return;
             }
@@ -49,7 +49,7 @@ namespace TicTacToeBot
             Point button8Point = new Point(2, 1);
             Point button9Point = new Point(2, 2);
 
-            var predictedMove = path[MoveCount + 1];
+            var predictedMove = path;
             for (int column = 0; column < 3; column++)
             {
                 for (int row = 0; row < 3; row++)
@@ -157,9 +157,17 @@ namespace TicTacToeBot
 
         private void CPUButton_Click(object sender, EventArgs e)
         {
-            List<GameState<char[,]>>? winningCPUPath = BoardTree.FindWinningPath(CurrentGameState, 'X');
+            char currentPlay = PreviousPlay;
 
+            if (PreviousPlay == 'X')
+            { currentPlay = 'O'; }
+            else
+            { currentPlay = 'X'; }
+
+            GameState<char[,]>? winningCPUPath = BoardTree.FindWinningMove(CurrentGameState, currentPlay);
             PlayBotMove(e, winningCPUPath);
+
+            
 
             ;
         }

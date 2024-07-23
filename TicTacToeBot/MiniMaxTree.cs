@@ -7,7 +7,7 @@
 
         private List<GameState<T>> AllGameStates;
 
-        public MiniMaxTree(GameState<T> rootGameState, char prevPlay) 
+        public MiniMaxTree(GameState<T> rootGameState, char prevPlay)
         {
             Root = rootGameState;
             PreviousPlay = prevPlay;
@@ -18,7 +18,7 @@
 
         private bool VerifyWin(GameState<T> gameState) { return gameState.GetScore() != 0; }
 
-        private char[,] GetBoard (GameState<T> gameState)
+        private char[,] GetBoard(GameState<T> gameState)
         {
             var gameBoard = new char[3, 3] { { ' ', ' ', ' ' }, { ' ', ' ', ' ' }, { ' ', ' ', ' ' } };
 
@@ -36,9 +36,9 @@
         {
             if (!VerifyWin(gameState))
             {
-                if (previousPlay == 'X') 
+                if (previousPlay == 'X')
                 { previousPlay = 'O'; }
-                else 
+                else
                 { previousPlay = 'X'; }
 
                 var gameBoard = GetBoard(gameState);
@@ -62,6 +62,18 @@
                 }
 
                 int largestScore = 0;
+                if (gameState.NextLayer.Count > 0)
+                {
+                    if (previousPlay == 'X')
+                    {
+                        largestScore = -1;
+                    }
+                    else
+                    {
+                        largestScore = 1;
+                    }
+                }
+
                 for (int i = 0; i < gameState.NextLayer.Count; i++)
                 {
                     if (previousPlay == 'X')
@@ -79,9 +91,10 @@
                         }
                     }
                 }
-                if (largestScore != 0) { gameState.Score = largestScore; }               
+                gameState.Score = largestScore;
             }
-            else { gameState.Score = gameState.GetScore(); }
+            else
+            { gameState.Score = gameState.GetScore(); }
         }
 
 
@@ -108,64 +121,27 @@
             }
             return null;
         }
-        private GameState<T> DFSSelector(List<GameState<T>> frontier)
+        public GameState<T> FindWinningMove(GameState<T> startingGameState, char winningPlayer)
         {
-            GameState<T> dequeued = frontier[^1];
-            frontier.RemoveAt(frontier.Count - 1);
-            return dequeued;
-        }
-        public List<GameState<T>>? FindWinningPath(GameState<T> startingGameState, char winningPlayer)
-        {
-            List<GameState<T>> result = new();
-            List<GameState<T>> frontier = new();
-           
-            GameState<T>? current = Search(startingGameState);
-            frontier.Add(current);
-           
-            while (frontier.Count > 0)
+            GameState<T>? start = Search(startingGameState);
+
+            foreach (var nextGameState in start.NextLayer)
             {
-                current = DFSSelector(frontier);
-
-                bool WinContained = false; // maybe has to do with defense ??
-                foreach (var nextGameState in current.NextLayer)
+                if ((winningPlayer == 'X' && nextGameState.Score > 0) ||
+                    (winningPlayer == 'O' && nextGameState.Score < 0))
                 {
-                    frontier.Add(nextGameState);
-                    if (nextGameState.Score != 0)
-                    {
-                        WinContained = true;
-                    }
-                }
-
-                bool foundProblem = false;
-                if (((winningPlayer == 'X' && current.Score == 1 && current.NextLayer.Count <= 0) ||
-                    (winningPlayer == 'O' && current.Score == -1 && current.NextLayer.Count <= 0))                  
-                   )
-                {
-                    GameState<T> runner = current;
-                    while (runner != null)
-                    {
-                        result.Add(runner);                      
-
-                        if (runner.GetScore() == -1)
-                        {
-                            foundProblem = true;
-                        }
-
-                        runner = runner.Parent;
-                    }
-                    result.Reverse();
-
-                    if (foundProblem)
-                    {
-                        result.Clear();
-                    }
-                    else
-                    {
-                        return result;
-                    }
+                    return nextGameState;
                 }
             }
-            return null;
+            foreach (var nextGameState in start.NextLayer)
+            {
+                if (nextGameState.Score == 0)
+                {
+                    return nextGameState;
+                }
+            }
+
+            return start.NextLayer[0];
         }
     }
 }
