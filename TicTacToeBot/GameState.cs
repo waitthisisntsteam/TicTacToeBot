@@ -10,26 +10,26 @@ namespace TicTacToeBot
 {
     public class GameState<T>
     {
-        public GameState<T>? Parent;
-        public List<GameState<T>> NextLayer;
+        public GameState<T>? ParentState;
+        public List<GameState<T>> NextPossibleStates;
 
-        public char[,] PuzzlePieces;
+        public char[,] TicTacToeBoard;
         public int Score;
 
         public char CurrentPlayer => GetPlayer();
 
-        public GameState(char[,] puzzlePieces)
+        public GameState(char[,] ticTacToeBoard)
         {
-            Parent = null;
-            NextLayer = new();
+            ParentState = null;
+            NextPossibleStates = new();
             Score = 0;
 
-            PuzzlePieces = new char[puzzlePieces.GetLength(0), puzzlePieces.GetLength(1)];
+            TicTacToeBoard = new char[3, 3];
             for (int column = 0; column < 3; column++)
             {
                 for (int row = 0; row < 3; row++)
                 {
-                    PuzzlePieces[column, row] = puzzlePieces[column, row];
+                    TicTacToeBoard[column, row] = ticTacToeBoard[column, row];
                 }
             }         
         }
@@ -38,16 +38,16 @@ namespace TicTacToeBot
         {
             char winningPiece = ' ';
 
-            if ((PuzzlePieces[1, 1] != ' ') && ((PuzzlePieces[0, 0] == PuzzlePieces[1, 1] && PuzzlePieces[1, 1] == PuzzlePieces[2, 2]) || (PuzzlePieces[2, 0] == PuzzlePieces[1, 1] && PuzzlePieces[1, 1] == PuzzlePieces[0, 2])))
-            { winningPiece = PuzzlePieces[1, 1]; }
+            if ((TicTacToeBoard[1, 1] != ' ') && ((TicTacToeBoard[0, 0] == TicTacToeBoard[1, 1] && TicTacToeBoard[1, 1] == TicTacToeBoard[2, 2]) || (TicTacToeBoard[2, 0] == TicTacToeBoard[1, 1] && TicTacToeBoard[1, 1] == TicTacToeBoard[0, 2])))
+            { winningPiece = TicTacToeBoard[1, 1]; }
             else
             {
                 for (int currentPiece = 0; currentPiece < 3; currentPiece++)
                 {
-                    if ((PuzzlePieces[currentPiece, 0] != ' ' && PuzzlePieces[currentPiece, 0] == PuzzlePieces[currentPiece, 1] && PuzzlePieces[currentPiece, 1] == PuzzlePieces[currentPiece, 2]))
-                    { winningPiece = PuzzlePieces[currentPiece, 0]; break; }
-                    else if ((PuzzlePieces[0, currentPiece] != ' ') && PuzzlePieces[0, currentPiece] == PuzzlePieces[1, currentPiece] && PuzzlePieces[1, currentPiece] == PuzzlePieces[2, currentPiece])
-                    { winningPiece = PuzzlePieces[0, currentPiece]; break; }
+                    if ((TicTacToeBoard[currentPiece, 0] != ' ' && TicTacToeBoard[currentPiece, 0] == TicTacToeBoard[currentPiece, 1] && TicTacToeBoard[currentPiece, 1] == TicTacToeBoard[currentPiece, 2]))
+                    { winningPiece = TicTacToeBoard[currentPiece, 0]; break; }
+                    else if ((TicTacToeBoard[0, currentPiece] != ' ') && TicTacToeBoard[0, currentPiece] == TicTacToeBoard[1, currentPiece] && TicTacToeBoard[1, currentPiece] == TicTacToeBoard[2, currentPiece])
+                    { winningPiece = TicTacToeBoard[0, currentPiece]; break; }
                 }
             }
 
@@ -69,9 +69,9 @@ namespace TicTacToeBot
             {
                 for (int row = 0; row < 3; row++)
                 {
-                    if (PuzzlePieces[column, row] == 'X') 
+                    if (TicTacToeBoard[column, row] == 'X') 
                     { xCount++; }
-                    else if (PuzzlePieces[column, row] == 'O')
+                    else if (TicTacToeBoard[column, row] == 'O')
                     { oCount++; }
                 }
             }

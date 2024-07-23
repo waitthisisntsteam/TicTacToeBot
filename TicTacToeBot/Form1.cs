@@ -2,7 +2,7 @@ namespace TicTacToeBot
 {
     public partial class Form1 : Form
     {
-        private char PreviousPlay;
+        private char PreviousPlayer;
         
         public Point TopLeftButtonPoint;
         public Point TopMiddleButtonPoint;
@@ -26,7 +26,7 @@ namespace TicTacToeBot
         {
             InitializeComponent();
 
-            PreviousPlay = 'X';
+            PreviousPlayer = 'X';
 
             TopLeftButtonPoint = new Point(0, 0);
             TopMiddleButtonPoint = new Point(0, 1);
@@ -44,8 +44,8 @@ namespace TicTacToeBot
             CurrentGameState = new GameState<char[,]>(CurrentGameBoard);
             BaseState = new GameState<char[,]>(BaseBoard);
 
-            BoardTree = new(BaseState, PreviousPlay);
-            BoardTree.GenerateTree(BaseState, PreviousPlay);
+            BoardTree = new(BaseState, PreviousPlayer);
+            BoardTree.GenerateTree(BaseState, PreviousPlayer);
         }
 
         private void PlayBotMove(GameState<char[,]>? move, EventArgs e)
@@ -57,7 +57,7 @@ namespace TicTacToeBot
             {
                 for (int row = 0; row < 3; row++)
                 {
-                    if (move.PuzzlePieces[column, row] != CurrentGameState.PuzzlePieces[column, row])
+                    if (move.TicTacToeBoard[column, row] != CurrentGameState.TicTacToeBoard[column, row])
                     {
                         Point currentPoint = new Point(row, column);
 
@@ -94,12 +94,12 @@ namespace TicTacToeBot
             {
                 if (pressedButton.Text == " ")
                 {
-                    if (PreviousPlay == 'X')
-                    { pressedButton.Text = "O"; PreviousPlay = 'O'; }
+                    if (PreviousPlayer == 'X')
+                    { pressedButton.Text = "O"; PreviousPlayer = 'O'; }
                     else
-                    { pressedButton.Text = "X"; PreviousPlay = 'X'; }
+                    { pressedButton.Text = "X"; PreviousPlayer = 'X'; }
 
-                    CurrentGameState.PuzzlePieces[pressedButton.Location.X / 200, pressedButton.Location.Y / 200] = PreviousPlay;
+                    CurrentGameState.TicTacToeBoard[pressedButton.Location.X / 200, pressedButton.Location.Y / 200] = PreviousPlayer;
                     Button_Click(pressedButton, e);
                 }
             }
@@ -111,7 +111,7 @@ namespace TicTacToeBot
         {
             WinningBar.Value = 0;
 
-            PreviousPlay = 'X';
+            PreviousPlayer = 'X';
 
             TopLeftButton.Text = " ";
             TopMiddleButton.Text = " ";
@@ -124,19 +124,19 @@ namespace TicTacToeBot
             BottomRightButton.Text = " ";
 
             CurrentGameBoard = new char[3, 3] { { ' ', ' ', ' ' }, { ' ', ' ', ' ' }, { ' ', ' ', ' ' } };
-            CurrentGameState.PuzzlePieces = CurrentGameBoard;
+            CurrentGameState.TicTacToeBoard = CurrentGameBoard;
         }
 
         private void CPUButton_Click(object sender, EventArgs e)
         {
-            char currentPlay = PreviousPlay;
+            char currentPlayer = PreviousPlayer;
 
-            if (PreviousPlay == 'X')
-            { currentPlay = 'O'; }
+            if (PreviousPlayer == 'X')
+            { currentPlayer = 'O'; }
             else
-            { currentPlay = 'X'; }
+            { currentPlayer = 'X'; }
 
-            GameState<char[,]>? winningCPUMove = BoardTree.FindWinningMove(CurrentGameState, currentPlay);
+            GameState<char[,]>? winningCPUMove = BoardTree.FindWinningMove(CurrentGameState, currentPlayer);
             PlayBotMove(winningCPUMove, e);
         }
     }
