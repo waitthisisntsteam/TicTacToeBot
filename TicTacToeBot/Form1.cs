@@ -2,10 +2,17 @@ namespace TicTacToeBot
 {
     public partial class Form1 : Form
     {
-        private MiniMaxTree<char[,]> BoardTree;
-
         private char PreviousPlay;
-        private int MoveCount;
+        
+        public Point TopLeftButtonPoint;
+        public Point TopMiddleButtonPoint;
+        public Point TopRightButtonPoint;
+        public Point MiddleLeftButtonPoint;
+        public Point MiddleButtonPoint;
+        public Point MiddleRightButtonPoint;
+        public Point BottomLeftButtonPoint;
+        public Point BottomMiddleButtonPoint;
+        public Point BottomRightMiddlePoint;
 
         private char[,] BaseBoard;
         private GameState<char[,]> BaseState;
@@ -13,12 +20,23 @@ namespace TicTacToeBot
         private char[,] CurrentGameBoard;
         private GameState<char[,]> CurrentGameState;
 
+        private MiniMaxTree<char[,]> BoardTree;
+
         public Form1()
         {
             InitializeComponent();
 
             PreviousPlay = 'X';
-            MoveCount = 0;
+
+            TopLeftButtonPoint = new Point(0, 0);
+            TopMiddleButtonPoint = new Point(0, 1);
+            TopRightButtonPoint = new Point(0, 2);
+            MiddleLeftButtonPoint = new Point(1, 0);
+            MiddleButtonPoint = new Point(1, 1);
+            MiddleRightButtonPoint = new Point(1, 2);
+            BottomLeftButtonPoint = new Point(2, 0);
+            BottomMiddleButtonPoint = new Point(2, 1);
+            BottomRightMiddlePoint = new Point(2, 2);
 
             CurrentGameBoard = new char[3, 3] { { ' ', ' ', ' ' }, { ' ', ' ', ' ' }, { ' ', ' ', ' ' } };
             BaseBoard = new char[3, 3] { { ' ', ' ', ' ' }, { ' ', ' ', ' ' }, { ' ', ' ', ' ' } };
@@ -28,71 +46,40 @@ namespace TicTacToeBot
 
             BoardTree = new(BaseState, PreviousPlay);
             BoardTree.GenerateTree(BaseState, PreviousPlay);
-
-            ;
         }
 
-        private void PlayBotMove(EventArgs e, GameState<char[,]> path)
+        private void PlayBotMove(GameState<char[,]>? move, EventArgs e)
         {
-            if (path == null)
-            {
-                return;
-            }
+            if (move == null)
+            { return; }
 
-            Point button1Point = new Point(0, 0);
-            Point button2Point = new Point(0, 1);
-            Point button3Point = new Point(0, 2);
-            Point button4Point = new Point(1, 0);
-            Point button5Point = new Point(1, 1);
-            Point button6Point = new Point(1, 2);
-            Point button7Point = new Point(2, 0);
-            Point button8Point = new Point(2, 1);
-            Point button9Point = new Point(2, 2);
-
-            var predictedMove = path;
             for (int column = 0; column < 3; column++)
             {
                 for (int row = 0; row < 3; row++)
                 {
-                    if (predictedMove.PuzzlePieces[column, row] != CurrentGameState.PuzzlePieces[column, row])
+                    if (move.PuzzlePieces[column, row] != CurrentGameState.PuzzlePieces[column, row])
                     {
                         Point currentPoint = new Point(row, column);
-                        if (currentPoint == button1Point)
-                        {
-                            Button_Click(button1, e);
-                        }
-                        else if (currentPoint == button2Point)
-                        {
-                            Button_Click(button2, e);
-                        }
-                        else if (currentPoint == button3Point)
-                        {
-                            Button_Click(button3, e);
-                        }
-                        else if (currentPoint == button4Point)
-                        {
-                            Button_Click(button4, e);
-                        }
-                        else if (currentPoint == button5Point)
-                        {
-                            Button_Click(button5, e);
-                        }
-                        else if (currentPoint == button6Point)
-                        {
-                            Button_Click(button6, e);
-                        }
-                        else if (currentPoint == button7Point)
-                        {
-                            Button_Click(button7, e);
-                        }
-                        else if (currentPoint == button8Point)
-                        {
-                            Button_Click(button8, e);
-                        }
-                        else if (currentPoint == button9Point)
-                        {
-                            Button_Click(button9, e);
-                        }
+
+                        if (currentPoint == TopLeftButtonPoint)
+                        { Button_Click(TopLeftButton, e); }
+                        else if (currentPoint == TopMiddleButtonPoint)
+                        { Button_Click(TopMiddleButton, e); }
+                        else if (currentPoint == TopRightButtonPoint)
+                        { Button_Click(TopRightButton, e); }
+                        else if (currentPoint == MiddleLeftButtonPoint)
+                        { Button_Click(MiddleLeftButton, e); }
+                        else if (currentPoint == MiddleButtonPoint)
+                        { Button_Click(MiddleButton, e); }
+                        else if (currentPoint == MiddleRightButtonPoint)
+                        { Button_Click(MiddleRightButton, e); }
+                        else if (currentPoint == BottomLeftButtonPoint)
+                        { Button_Click(BottomLeftButton, e); }
+                        else if (currentPoint == BottomMiddleButtonPoint)
+                        { Button_Click(BottomMiddleButton, e); }
+                        else if (currentPoint == BottomRightMiddlePoint)
+                        { Button_Click(BottomRightButton, e); }
+
                         return;
                     }
                 }
@@ -105,54 +92,39 @@ namespace TicTacToeBot
 
             if (CurrentGameState.GetScore() == 0)
             {
-              if (pressedButton.Text == " ")
-              {
-                  if (PreviousPlay == 'X')
-                  { pressedButton.Text = "O"; PreviousPlay = 'O'; }
-                  else
-                  { pressedButton.Text = "X"; PreviousPlay = 'X'; }
+                if (pressedButton.Text == " ")
+                {
+                    if (PreviousPlay == 'X')
+                    { pressedButton.Text = "O"; PreviousPlay = 'O'; }
+                    else
+                    { pressedButton.Text = "X"; PreviousPlay = 'X'; }
 
-                  CurrentGameState.PuzzlePieces[pressedButton.Location.X / 200, pressedButton.Location.Y / 200] = PreviousPlay;
-                  MoveCount++;
-
-                  if (CurrentGameState.GetScore() != 0)
-                  {
-                      Button_Click(sender, e);
-                  }
-              }
+                    CurrentGameState.PuzzlePieces[pressedButton.Location.X / 200, pressedButton.Location.Y / 200] = PreviousPlay;
+                    Button_Click(pressedButton, e);
+                }
             }
             else
-            {
-                //if (CurrentGameState.Score == 1)
-                //{ /*changecolor*/ }
-                //else
-                //{ /*changecolor*/ }
-
-                progressBar1.Value = 100;
-            }
-
+            { WinningBar.Value = 100; }
         }
 
         private void ResetButton_Click(object sender, EventArgs e)
         {
-            button1.Text = " ";
-            button2.Text = " ";
-            button3.Text = " ";
-            button4.Text = " ";
-            button5.Text = " ";
-            button6.Text = " ";
-            button7.Text = " ";
-            button8.Text = " ";
-            button9.Text = " ";
+            WinningBar.Value = 0;
+
+            PreviousPlay = 'X';
+
+            TopLeftButton.Text = " ";
+            TopMiddleButton.Text = " ";
+            TopRightButton.Text = " ";
+            MiddleLeftButton.Text = " ";
+            MiddleButton.Text = " ";
+            MiddleRightButton.Text = " ";
+            BottomLeftButton.Text = " ";
+            BottomMiddleButton.Text = " ";
+            BottomRightButton.Text = " ";
 
             CurrentGameBoard = new char[3, 3] { { ' ', ' ', ' ' }, { ' ', ' ', ' ' }, { ' ', ' ', ' ' } };
             CurrentGameState.PuzzlePieces = CurrentGameBoard;
-
-            MoveCount = 0;
-            PreviousPlay = 'X';
-
-            progressBar1.Value = 0;
-            ;
         }
 
         private void CPUButton_Click(object sender, EventArgs e)
@@ -164,12 +136,8 @@ namespace TicTacToeBot
             else
             { currentPlay = 'X'; }
 
-            GameState<char[,]>? winningCPUPath = BoardTree.FindWinningMove(CurrentGameState, currentPlay);
-            PlayBotMove(e, winningCPUPath);
-
-            
-
-            ;
+            GameState<char[,]>? winningCPUMove = BoardTree.FindWinningMove(CurrentGameState, currentPlay);
+            PlayBotMove(winningCPUMove, e);
         }
     }
 }

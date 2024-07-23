@@ -3,9 +3,8 @@
     public class MiniMaxTree<T>
     {
         public GameState<T> Root;
-        private char PreviousPlay;
-
         private List<GameState<T>> AllGameStates;
+        private char PreviousPlay;
 
         public MiniMaxTree(GameState<T> rootGameState, char prevPlay)
         {
@@ -65,13 +64,9 @@
                 if (gameState.NextLayer.Count > 0)
                 {
                     if (previousPlay == 'X')
-                    {
-                        largestScore = -1;
-                    }
+                    { largestScore = -1; }
                     else
-                    {
-                        largestScore = 1;
-                    }
+                    { largestScore = 1; }
                 }
 
                 for (int i = 0; i < gameState.NextLayer.Count; i++)
@@ -79,16 +74,12 @@
                     if (previousPlay == 'X')
                     {
                         if (largestScore < gameState.NextLayer[i].Score)
-                        {
-                            largestScore = gameState.NextLayer[i].Score;
-                        }
+                        { largestScore = gameState.NextLayer[i].Score; }
                     }
                     else
                     {
                         if (largestScore > gameState.NextLayer[i].Score)
-                        {
-                            largestScore = gameState.NextLayer[i].Score;
-                        }
+                        { largestScore = gameState.NextLayer[i].Score; }
                     }
                 }
                 gameState.Score = largestScore;
@@ -96,7 +87,6 @@
             else
             { gameState.Score = gameState.GetScore(); }
         }
-
 
         private GameState<T>? Search(GameState<T> wantedGameState)
         {
@@ -109,39 +99,37 @@
                     for (int row = 0; row < 3; row++)
                     {
                         if (AllGameStates[gameStateIndex].PuzzlePieces[column, row] != wantedGameState.PuzzlePieces[column, row])
-                        {
-                            boardCurrentlyEqual = false;
-                        }
+                        { boardCurrentlyEqual = false; }
                     }
                 }
                 if (boardCurrentlyEqual)
-                {
-                    return AllGameStates[gameStateIndex];
-                }
+                { return AllGameStates[gameStateIndex]; }
             }
+
             return null;
         }
-        public GameState<T> FindWinningMove(GameState<T> startingGameState, char winningPlayer)
+        public GameState<T>? FindWinningMove(GameState<T> startingGameState, char winningPlayer)
         {
             GameState<T>? start = Search(startingGameState);
 
-            foreach (var nextGameState in start.NextLayer)
+            if (start != null)
             {
-                if ((winningPlayer == 'X' && nextGameState.Score > 0) ||
-                    (winningPlayer == 'O' && nextGameState.Score < 0))
+                foreach (var nextGameState in start.NextLayer)
                 {
-                    return nextGameState;
+                    if ((winningPlayer == 'X' && nextGameState.Score > 0) || (winningPlayer == 'O' && nextGameState.Score < 0))
+                    { return nextGameState; }
                 }
-            }
-            foreach (var nextGameState in start.NextLayer)
-            {
-                if (nextGameState.Score == 0)
+                foreach (var nextGameState in start.NextLayer)
                 {
-                    return nextGameState;
+                    if (nextGameState.Score == 0)
+                    { return nextGameState; }
                 }
+
+                if (start.NextLayer.Count > 0)
+                { return start.NextLayer[0]; }
             }
 
-            return start.NextLayer[0];
+            return null;
         }
     }
 }
