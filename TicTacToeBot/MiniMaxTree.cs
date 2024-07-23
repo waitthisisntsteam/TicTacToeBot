@@ -119,7 +119,7 @@
             List<GameState<T>> result = new();
             List<GameState<T>> frontier = new();
            
-            GameState<T> current = Search(startingGameState);
+            GameState<T>? current = Search(startingGameState);
             frontier.Add(current);
            
             while (frontier.Count > 0)
@@ -136,17 +136,33 @@
                     }
                 }
 
-                if ((winningPlayer == 'X' && current.Score == 1 && current.NextLayer.Count <= 0) ||
-                    (winningPlayer == 'O' && current.Score == -1 && current.NextLayer.Count <= 0))
+                bool foundProblem = false;
+                if (((winningPlayer == 'X' && current.Score == 1 && current.NextLayer.Count <= 0) ||
+                    (winningPlayer == 'O' && current.Score == -1 && current.NextLayer.Count <= 0))                  
+                   )
                 {
                     GameState<T> runner = current;
                     while (runner != null)
                     {
-                        result.Add(runner);
+                        result.Add(runner);                      
+
+                        if (runner.GetScore() == -1)
+                        {
+                            foundProblem = true;
+                        }
+
                         runner = runner.Parent;
                     }
                     result.Reverse();
-                    return result;
+
+                    if (foundProblem)
+                    {
+                        result.Clear();
+                    }
+                    else
+                    {
+                        return result;
+                    }
                 }
             }
             return null;

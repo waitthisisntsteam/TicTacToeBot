@@ -34,6 +34,11 @@ namespace TicTacToeBot
 
         private void PlayBotMove(EventArgs e, List<GameState<char[,]>> path)
         {
+            if (path == null || path.Count < MoveCount + 1)
+            {
+                return;
+            }
+
             Point button1Point = new Point(0, 0);
             Point button2Point = new Point(0, 1);
             Point button3Point = new Point(0, 2);
