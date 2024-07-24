@@ -21,6 +21,8 @@ namespace TicTacToeBot
         private Point BottomMiddleButtonPoint;
         private Point BottomRightMiddlePoint;
 
+        private ExpectiMaxTree<char[,]> ExpectiMaxTree;
+
         public TicTacToe()
         {
             InitializeComponent();
@@ -29,8 +31,10 @@ namespace TicTacToeBot
 
             BaseBoard = new char[3, 3] { { ' ', ' ', ' ' }, { ' ', ' ', ' ' }, { ' ', ' ', ' ' } };
             BaseState = new GameState<char[,]>(BaseBoard);
-            BoardTree = new(BaseState, PreviousPlayer);
-            BoardTree.GenerateTree(BaseState, PreviousPlayer);
+            
+            //BoardTree = new(BaseState, PreviousPlayer);
+            //BoardTree.GenerateTree(BaseState, PreviousPlayer);
+            
             CurrentGameBoard = new char[3, 3] { { ' ', ' ', ' ' }, { ' ', ' ', ' ' }, { ' ', ' ', ' ' } };
             CurrentGameState = new GameState<char[,]>(CurrentGameBoard);
 
@@ -43,6 +47,11 @@ namespace TicTacToeBot
             BottomLeftButtonPoint = new Point(2, 0);
             BottomMiddleButtonPoint = new Point(2, 1);
             BottomRightMiddlePoint = new Point(2, 2);
+
+            ExpectiMaxTree = new(BaseState, PreviousPlayer);
+            ExpectiMaxTree.GenerateTree(BaseState, PreviousPlayer);
+            ExpectiMaxTree.GeneratePercentages();
+            ;
         }
 
         private void PlayBotMove(GameState<char[,]>? move, EventArgs e)
