@@ -10,7 +10,6 @@ namespace TicTacToeBot
 {
     public class GameState<T>
     {
-        public GameState<T>? ParentState;
         public List<GameState<T>> NextPossibleStates;
 
         public char[,] TicTacToeBoard;
@@ -20,7 +19,6 @@ namespace TicTacToeBot
 
         public GameState(char[,] ticTacToeBoard)
         {
-            ParentState = null;
             NextPossibleStates = new();
             Score = 0;
 

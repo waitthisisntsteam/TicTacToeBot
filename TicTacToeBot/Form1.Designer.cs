@@ -1,6 +1,6 @@
 ﻿namespace TicTacToeBot
 {
-    partial class Form1
+    partial class TicTacToe
     {
         /// <summary>
         ///  Required designer variable.
@@ -168,7 +168,7 @@
             CPUButton.UseVisualStyleBackColor = true;
             CPUButton.Click += CPUButton_Click;
             // 
-            // Form1
+            // TicTacToe
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -185,8 +185,10 @@
             Controls.Add(TopRightButton);
             Controls.Add(TopMiddleButton);
             Controls.Add(TopLeftButton);
-            Name = "Form1";
-            Text = "Form1";
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+            Name = "TicTacToe";
+            StartPosition = FormStartPosition.CenterScreen;
+            Text = "TicTacToe";
             ResumeLayout(false);
         }
 

@@ -1,32 +1,38 @@
 namespace TicTacToeBot
 {
-    public partial class Form1 : Form
+    public partial class TicTacToe : Form
     {
         private char PreviousPlayer;
-        
-        public Point TopLeftButtonPoint;
-        public Point TopMiddleButtonPoint;
-        public Point TopRightButtonPoint;
-        public Point MiddleLeftButtonPoint;
-        public Point MiddleButtonPoint;
-        public Point MiddleRightButtonPoint;
-        public Point BottomLeftButtonPoint;
-        public Point BottomMiddleButtonPoint;
-        public Point BottomRightMiddlePoint;
 
         private char[,] BaseBoard;
         private GameState<char[,]> BaseState;
-        
+        private MiniMaxTree<char[,]> BoardTree;
+
         private char[,] CurrentGameBoard;
         private GameState<char[,]> CurrentGameState;
 
-        private MiniMaxTree<char[,]> BoardTree;
+        private Point TopLeftButtonPoint;
+        private Point TopMiddleButtonPoint;
+        private Point TopRightButtonPoint;
+        private Point MiddleLeftButtonPoint;
+        private Point MiddleButtonPoint;
+        private Point MiddleRightButtonPoint;
+        private Point BottomLeftButtonPoint;
+        private Point BottomMiddleButtonPoint;
+        private Point BottomRightMiddlePoint;
 
-        public Form1()
+        public TicTacToe()
         {
             InitializeComponent();
 
             PreviousPlayer = 'X';
+
+            BaseBoard = new char[3, 3] { { ' ', ' ', ' ' }, { ' ', ' ', ' ' }, { ' ', ' ', ' ' } };
+            BaseState = new GameState<char[,]>(BaseBoard);
+            BoardTree = new(BaseState, PreviousPlayer);
+            BoardTree.GenerateTree(BaseState, PreviousPlayer);
+            CurrentGameBoard = new char[3, 3] { { ' ', ' ', ' ' }, { ' ', ' ', ' ' }, { ' ', ' ', ' ' } };
+            CurrentGameState = new GameState<char[,]>(CurrentGameBoard);
 
             TopLeftButtonPoint = new Point(0, 0);
             TopMiddleButtonPoint = new Point(0, 1);
@@ -37,15 +43,6 @@ namespace TicTacToeBot
             BottomLeftButtonPoint = new Point(2, 0);
             BottomMiddleButtonPoint = new Point(2, 1);
             BottomRightMiddlePoint = new Point(2, 2);
-
-            CurrentGameBoard = new char[3, 3] { { ' ', ' ', ' ' }, { ' ', ' ', ' ' }, { ' ', ' ', ' ' } };
-            BaseBoard = new char[3, 3] { { ' ', ' ', ' ' }, { ' ', ' ', ' ' }, { ' ', ' ', ' ' } };
-
-            CurrentGameState = new GameState<char[,]>(CurrentGameBoard);
-            BaseState = new GameState<char[,]>(BaseBoard);
-
-            BoardTree = new(BaseState, PreviousPlayer);
-            BoardTree.GenerateTree(BaseState, PreviousPlayer);
         }
 
         private void PlayBotMove(GameState<char[,]>? move, EventArgs e)
@@ -94,10 +91,8 @@ namespace TicTacToeBot
             {
                 if (pressedButton.Text == " ")
                 {
-                    if (PreviousPlayer == 'X')
-                    { pressedButton.Text = "O"; PreviousPlayer = 'O'; }
-                    else
-                    { pressedButton.Text = "X"; PreviousPlayer = 'X'; }
+                    PreviousPlayer = PreviousPlayer == 'X' ? 'O' : 'X';
+                    pressedButton.Text = "" + PreviousPlayer;
 
                     CurrentGameState.TicTacToeBoard[pressedButton.Location.X / 200, pressedButton.Location.Y / 200] = PreviousPlayer;
                     Button_Click(pressedButton, e);
@@ -129,14 +124,7 @@ namespace TicTacToeBot
 
         private void CPUButton_Click(object sender, EventArgs e)
         {
-            char currentPlayer = PreviousPlayer;
-
-            if (PreviousPlayer == 'X')
-            { currentPlayer = 'O'; }
-            else
-            { currentPlayer = 'X'; }
-
-            GameState<char[,]>? winningCPUMove = BoardTree.FindWinningMove(CurrentGameState, currentPlayer);
+            GameState<char[,]>? winningCPUMove = BoardTree.FindWinningMove(CurrentGameState, PreviousPlayer == 'X' ? 'O' : 'X');
             PlayBotMove(winningCPUMove, e);
         }
     }
