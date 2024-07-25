@@ -5,7 +5,7 @@ namespace TicTacToeBot
     public class MiniMaxTree<T>
     {
         private GameState<T> Root;
-        private List<GameState<T>> AllGameStates;
+        public List<GameState<T>> AllGameStates;
         private char PreviousPlay;
         private int LastDuplicateIndex;
 
@@ -108,6 +108,7 @@ namespace TicTacToeBot
                             {
                                 AllGameStates.Add(nextGameState);
 
+                                nextGameState.ParentState = gameState;
                                 gameState.NextPossibleStates.Add(nextGameState);                                
                                 GenerateTree(nextGameState, previousPlayer);
                             }

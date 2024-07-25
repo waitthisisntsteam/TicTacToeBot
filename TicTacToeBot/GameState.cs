@@ -12,7 +12,6 @@ namespace TicTacToeBot
     {
         public List<GameState<T>> NextPossibleStates;
         public GameState<T>? ParentState;
-        public double WinPercentage;
         public int Score;
 
         public char[,] TicTacToeBoard;
@@ -23,7 +22,6 @@ namespace TicTacToeBot
         {
             NextPossibleStates = new();
             ParentState = null;
-            WinPercentage = 0.0;
             Score = 0;
 
             TicTacToeBoard = new char[3, 3];
@@ -63,7 +61,7 @@ namespace TicTacToeBot
             return 0;
         }
 
-        public char GetPlayer()
+        private char GetPlayer()
         {
             int xCount = 0;
             int oCount = 0;

@@ -32,8 +32,8 @@ namespace TicTacToeBot
             BaseBoard = new char[3, 3] { { ' ', ' ', ' ' }, { ' ', ' ', ' ' }, { ' ', ' ', ' ' } };
             BaseState = new GameState<char[,]>(BaseBoard);
             
-            //BoardTree = new(BaseState, PreviousPlayer);
-            //BoardTree.GenerateTree(BaseState, PreviousPlayer);
+            BoardTree = new(BaseState, PreviousPlayer);
+            BoardTree.GenerateTree(BaseState, PreviousPlayer);
             
             CurrentGameBoard = new char[3, 3] { { ' ', ' ', ' ' }, { ' ', ' ', ' ' }, { ' ', ' ', ' ' } };
             CurrentGameState = new GameState<char[,]>(CurrentGameBoard);
@@ -48,9 +48,8 @@ namespace TicTacToeBot
             BottomMiddleButtonPoint = new Point(2, 1);
             BottomRightMiddlePoint = new Point(2, 2);
 
-            ExpectiMaxTree = new(BaseState, PreviousPlayer);
-            ExpectiMaxTree.GenerateTree(BaseState, PreviousPlayer);
-            ExpectiMaxTree.GeneratePercentages();
+            ExpectiMaxTree = new(BoardTree);
+            ExpectiMaxTree.GenerateTree();
             ;
         }
 
@@ -133,8 +132,8 @@ namespace TicTacToeBot
 
         private void CPUButton_Click(object sender, EventArgs e)
         {
-            GameState<char[,]>? winningCPUMove = BoardTree.FindWinningMove(CurrentGameState, PreviousPlayer == 'X' ? 'O' : 'X');
-            PlayBotMove(winningCPUMove, e);
+            //GameState<char[,]>? winningCPUMove = BoardTree.FindWinningMove(CurrentGameState, PreviousPlayer == 'X' ? 'O' : 'X');
+            //PlayBotMove(winningCPUMove, e);
         }
     }
 }
