@@ -56,7 +56,10 @@ namespace TicTacToeBot
         private void PlayBotMove(GameState<char[,]>? move, EventArgs e)
         {
             if (move == null)
-            { return; }
+            {
+                return; 
+            }
+
 
             for (int column = 0; column < 3; column++)
             {
@@ -67,23 +70,41 @@ namespace TicTacToeBot
                         Point currentPoint = new Point(row, column);
 
                         if (currentPoint == TopLeftButtonPoint)
-                        { Button_Click(TopLeftButton, e); }
+                        { 
+                            Button_Click(TopLeftButton, e); 
+                        }
                         else if (currentPoint == TopMiddleButtonPoint)
-                        { Button_Click(TopMiddleButton, e); }
+                        {
+                            Button_Click(TopMiddleButton, e); 
+                        }
                         else if (currentPoint == TopRightButtonPoint)
-                        { Button_Click(TopRightButton, e); }
+                        { 
+                            Button_Click(TopRightButton, e);
+                        }
                         else if (currentPoint == MiddleLeftButtonPoint)
-                        { Button_Click(MiddleLeftButton, e); }
+                        { 
+                            Button_Click(MiddleLeftButton, e);
+                        }
                         else if (currentPoint == MiddleButtonPoint)
-                        { Button_Click(MiddleButton, e); }
+                        {
+                            Button_Click(MiddleButton, e); 
+                        }
                         else if (currentPoint == MiddleRightButtonPoint)
-                        { Button_Click(MiddleRightButton, e); }
+                        { 
+                            Button_Click(MiddleRightButton, e);
+                        }
                         else if (currentPoint == BottomLeftButtonPoint)
-                        { Button_Click(BottomLeftButton, e); }
+                        {
+                            Button_Click(BottomLeftButton, e);
+                        }
                         else if (currentPoint == BottomMiddleButtonPoint)
-                        { Button_Click(BottomMiddleButton, e); }
+                        { 
+                            Button_Click(BottomMiddleButton, e);
+                        }
                         else if (currentPoint == BottomRightMiddlePoint)
-                        { Button_Click(BottomRightButton, e); }
+                        { 
+                            Button_Click(BottomRightButton, e);
+                        }
 
                         return;
                     }
@@ -107,7 +128,9 @@ namespace TicTacToeBot
                 }
             }
             else
-            { WinningBar.Value = 100; }
+            {
+                WinningBar.Value = 100; 
+            }
         }
 
         private void ResetButton_Click(object sender, EventArgs e)
@@ -132,8 +155,8 @@ namespace TicTacToeBot
 
         private void CPUButton_Click(object sender, EventArgs e)
         {
-            //GameState<char[,]>? winningCPUMove = BoardTree.FindWinningMove(CurrentGameState, PreviousPlayer == 'X' ? 'O' : 'X');
-            //PlayBotMove(winningCPUMove, e);
+            GameState<char[,]>? winningCPUMove = BoardTree.FindWinningMove(CurrentGameState, PreviousPlayer == 'X' ? 'O' : 'X');
+            PlayBotMove(winningCPUMove, e);
         }
     }
 }

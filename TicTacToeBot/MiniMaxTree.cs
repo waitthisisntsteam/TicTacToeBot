@@ -9,6 +9,9 @@ namespace TicTacToeBot
         private char PreviousPlay;
         private int LastDuplicateIndex;
 
+        private double Alpha;
+        private double Beta;
+
         public MiniMaxTree(GameState<T> rootGameState, char prevPlay)
         {
             Root = rootGameState;
@@ -18,6 +21,11 @@ namespace TicTacToeBot
             AllGameStates.Add(Root);
 
             LastDuplicateIndex = 0;
+
+            //X = maximizer
+            //O = minimizer
+            Alpha = double.NegativeInfinity;
+            Beta = double.PositiveInfinity;
         }
 
         private bool AreBoardsEqual(GameState<T> firstGameState, GameState<T> secondGameState)
@@ -36,7 +44,7 @@ namespace TicTacToeBot
             }
             return false;
         }
-        private bool VerifyWin(GameState<T> gameState) { return gameState.GetScore() != 0; }
+        private bool VerifyWin(GameState<T> gameState) => gameState.GetScore() != 0;
 
         private char[,] GetBoard(GameState<T> gameState)
         {
@@ -71,18 +79,24 @@ namespace TicTacToeBot
         {
             int largestScore = 0;
             if (gameState.NextPossibleStates.Count > 0)
-            { largestScore = previousPlayer == 'X' ? -1 : 1; }
+            { 
+                largestScore = previousPlayer == 'X' ? -1 : 1;
+            }
             for (int i = 0; i < gameState.NextPossibleStates.Count; i++)
             {
                 if (previousPlayer == 'X')
                 {
                     if (largestScore < gameState.NextPossibleStates[i].Score)
-                    { largestScore = gameState.NextPossibleStates[i].Score; }
+                    { 
+                        largestScore = gameState.NextPossibleStates[i].Score; 
+                    }
                 }
                 else
                 {
                     if (largestScore > gameState.NextPossibleStates[i].Score)
-                    { largestScore = gameState.NextPossibleStates[i].Score; }
+                    { 
+                        largestScore = gameState.NextPossibleStates[i].Score;
+                    }
                 }
             }
             gameState.Score = largestScore;
@@ -113,7 +127,9 @@ namespace TicTacToeBot
                                 GenerateTree(nextGameState, previousPlayer);
                             }
                             else
-                            { gameState.NextPossibleStates.Add(AllGameStates[LastDuplicateIndex]); }  
+                            { 
+                                gameState.NextPossibleStates.Add(AllGameStates[LastDuplicateIndex]); 
+                            }  
                         }
                     }
                 }
@@ -121,7 +137,9 @@ namespace TicTacToeBot
                 GenerateScores(gameState, previousPlayer);
             }
             else
-            { gameState.Score = gameState.GetScore(); }
+            { 
+                gameState.Score = gameState.GetScore(); 
+            }
         }
 
         private GameState<T>? FindEqualGame(GameState<T> wantedGameState)
@@ -129,7 +147,9 @@ namespace TicTacToeBot
             for (int gameStateIndex = 0; gameStateIndex < AllGameStates.Count; gameStateIndex++)
             {
                 if (AreBoardsEqual(wantedGameState, AllGameStates[gameStateIndex]))
-                { return AllGameStates[gameStateIndex]; }
+                { 
+                    return AllGameStates[gameStateIndex]; 
+                }
             }
 
             return null;
@@ -146,20 +166,28 @@ namespace TicTacToeBot
                     if ((winningPlayer == 'X' && nextGameState.Score > 0) || (winningPlayer == 'O' && nextGameState.Score < 0))
                     {
                         if (bestMove == null || (bestMove != null && bestMove.NextPossibleStates.Count > nextGameState.NextPossibleStates.Count))
-                        { bestMove = nextGameState; }
+                        { 
+                            bestMove = nextGameState; 
+                        }
                     }
                 }
                 if (bestMove != null)
-                { return bestMove; }
+                { 
+                    return bestMove; 
+                }
 
                 foreach (var nextGameState in start.NextPossibleStates)
                 {
                     if (nextGameState.Score == 0)
-                    { return nextGameState; }
+                    { 
+                        return nextGameState;
+                    }
                 }
 
                 if (start.NextPossibleStates.Count > 0)
-                { return start.NextPossibleStates[0]; }
+                { 
+                    return start.NextPossibleStates[0]; 
+                }
             }
 
             return null;
