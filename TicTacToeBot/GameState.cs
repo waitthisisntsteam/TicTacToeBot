@@ -13,6 +13,8 @@ namespace TicTacToeBot
         public List<GameState<T>> NextPossibleStates;
         public GameState<T>? ParentState;
         public int Score;
+        public int Alpha;
+        public int Beta;
 
         public char[,] TicTacToeBoard;
 
@@ -63,8 +65,10 @@ namespace TicTacToeBot
             {
                 if (winningPiece == 'X')
                 {
+                    Alpha++;
                     return 1; 
                 }
+                Beta++;
                 return -1;
             }
 

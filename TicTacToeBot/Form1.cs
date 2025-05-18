@@ -7,6 +7,7 @@ namespace TicTacToeBot
         private char[,] BaseBoard;
         private GameState<char[,]> BaseState;
         private MiniMaxTree<char[,]> BoardTree;
+        private MiniMaxTree<char[,]> PrunedTree;
 
         private char[,] CurrentGameBoard;
         private GameState<char[,]> CurrentGameState;
@@ -23,6 +24,8 @@ namespace TicTacToeBot
 
         private ExpectiMaxTree<char[,]> ExpectiMaxTree;
 
+        private bool Pruning;
+
         public TicTacToe()
         {
             InitializeComponent();
@@ -31,10 +34,14 @@ namespace TicTacToeBot
 
             BaseBoard = new char[3, 3] { { ' ', ' ', ' ' }, { ' ', ' ', ' ' }, { ' ', ' ', ' ' } };
             BaseState = new GameState<char[,]>(BaseBoard);
-            
+
             BoardTree = new(BaseState, PreviousPlayer);
             BoardTree.GenerateTree(BaseState, PreviousPlayer);
-            
+
+            PrunedTree = new (BaseState, PreviousPlayer);
+            PrunedTree.GenerateTree(BaseState, PreviousPlayer);
+            Pruning = false;
+
             CurrentGameBoard = new char[3, 3] { { ' ', ' ', ' ' }, { ' ', ' ', ' ' }, { ' ', ' ', ' ' } };
             CurrentGameState = new GameState<char[,]>(CurrentGameBoard);
 
@@ -48,8 +55,8 @@ namespace TicTacToeBot
             BottomMiddleButtonPoint = new Point(2, 1);
             BottomRightMiddlePoint = new Point(2, 2);
 
-            ExpectiMaxTree = new(BoardTree);
-            ExpectiMaxTree.GenerateTree();
+            //ExpectiMaxTree = new(BoardTree);
+            //ExpectiMaxTree.GenerateTree();
             ;
         }
 
@@ -57,7 +64,7 @@ namespace TicTacToeBot
         {
             if (move == null)
             {
-                return; 
+                return;
             }
 
 
@@ -70,27 +77,27 @@ namespace TicTacToeBot
                         Point currentPoint = new Point(row, column);
 
                         if (currentPoint == TopLeftButtonPoint)
-                        { 
-                            Button_Click(TopLeftButton, e); 
+                        {
+                            Button_Click(TopLeftButton, e);
                         }
                         else if (currentPoint == TopMiddleButtonPoint)
                         {
-                            Button_Click(TopMiddleButton, e); 
+                            Button_Click(TopMiddleButton, e);
                         }
                         else if (currentPoint == TopRightButtonPoint)
-                        { 
+                        {
                             Button_Click(TopRightButton, e);
                         }
                         else if (currentPoint == MiddleLeftButtonPoint)
-                        { 
+                        {
                             Button_Click(MiddleLeftButton, e);
                         }
                         else if (currentPoint == MiddleButtonPoint)
                         {
-                            Button_Click(MiddleButton, e); 
+                            Button_Click(MiddleButton, e);
                         }
                         else if (currentPoint == MiddleRightButtonPoint)
-                        { 
+                        {
                             Button_Click(MiddleRightButton, e);
                         }
                         else if (currentPoint == BottomLeftButtonPoint)
@@ -98,11 +105,11 @@ namespace TicTacToeBot
                             Button_Click(BottomLeftButton, e);
                         }
                         else if (currentPoint == BottomMiddleButtonPoint)
-                        { 
+                        {
                             Button_Click(BottomMiddleButton, e);
                         }
                         else if (currentPoint == BottomRightMiddlePoint)
-                        { 
+                        {
                             Button_Click(BottomRightButton, e);
                         }
 
@@ -129,7 +136,7 @@ namespace TicTacToeBot
             }
             else
             {
-                WinningBar.Value = 100; 
+                WinningBar.Value = 100;
             }
         }
 
@@ -151,11 +158,27 @@ namespace TicTacToeBot
 
             CurrentGameBoard = new char[3, 3] { { ' ', ' ', ' ' }, { ' ', ' ', ' ' }, { ' ', ' ', ' ' } };
             CurrentGameState.TicTacToeBoard = CurrentGameBoard;
+
+            Pruning = false;
         }
 
         private void CPUButton_Click(object sender, EventArgs e)
         {
+            Pruning = false;
+
             GameState<char[,]>? winningCPUMove = BoardTree.FindWinningMove(CurrentGameState, PreviousPlayer == 'X' ? 'O' : 'X');
+            PlayBotMove(winningCPUMove, e);
+        }
+
+        private void OnlyCPUButton_Click(object sender, EventArgs e)
+        {
+            if (!Pruning)
+            {
+                ResetButton_Click(sender, e);
+            }
+            Pruning = true;
+
+            GameState<char[,]>? winningCPUMove = PrunedTree.FindWinningMove(CurrentGameState, PreviousPlayer == 'X' ? 'O' : 'X');
             PlayBotMove(winningCPUMove, e);
         }
     }

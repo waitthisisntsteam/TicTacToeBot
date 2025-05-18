@@ -24,8 +24,6 @@ namespace TicTacToeBot
 
             //X = maximizer
             //O = minimizer
-            Alpha = double.NegativeInfinity;
-            Beta = double.PositiveInfinity;
         }
 
         private bool AreBoardsEqual(GameState<T> firstGameState, GameState<T> secondGameState)
@@ -142,6 +140,48 @@ namespace TicTacToeBot
             }
         }
 
+        public void GenerateTreeWithPruning(GameState<T> gameState, char previousPlayer, int alpha = int.MinValue, int beta = int.MaxValue)
+        {
+            if (!VerifyWin(gameState))
+            {
+                previousPlayer = previousPlayer == 'X' ? 'O' : 'X';
+                var gameBoard = GetBoard(gameState);
+
+                for (int column = 0; column < 3; column++)
+                {
+                    for (int row = 0; row < 3; row++)
+                    {
+                        GameState<T> nextGameState = new(gameBoard);
+
+                        if (nextGameState.TicTacToeBoard[column, row] == ' ')
+                        {
+                            nextGameState.TicTacToeBoard[column, row] = previousPlayer;
+
+                            if (!FindDuplicate(nextGameState))
+                            {
+                                AllGameStates.Add(nextGameState);
+
+                                nextGameState.ParentState = gameState;
+                                gameState.NextPossibleStates.Add(nextGameState);
+                                GenerateTreeWithPruning(nextGameState, previousPlayer, alpha, beta);
+                            }
+                            else
+                            {
+                                gameState.NextPossibleStates.Add(AllGameStates[LastDuplicateIndex]);
+                            }
+                        }
+                    }
+                }
+
+                GenerateScores(gameState, previousPlayer);
+
+            }
+            else
+            {
+                gameState.Score = gameState.GetScore();
+            }
+        }
+
         private GameState<T>? FindEqualGame(GameState<T> wantedGameState)
         {
             for (int gameStateIndex = 0; gameStateIndex < AllGameStates.Count; gameStateIndex++)
@@ -156,6 +196,12 @@ namespace TicTacToeBot
         }
         public GameState<T>? FindWinningMove(GameState<T> startingGameState, char winningPlayer)
         {
+            //X = maximizer
+            //O = minimizer
+
+            int alpha = int.MinValue;
+            int beta = int.MaxValue;
+
             GameState<T>? start = FindEqualGame(startingGameState);
             GameState<T>? bestMove = null;
 

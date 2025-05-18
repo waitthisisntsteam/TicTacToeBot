@@ -40,6 +40,7 @@
             WinningBar = new ProgressBar();
             ResetButton = new Button();
             CPUButton = new Button();
+            OnlyCPUButton = new Button();
             SuspendLayout();
             // 
             // TopLeftButton
@@ -168,11 +169,22 @@
             CPUButton.UseVisualStyleBackColor = true;
             CPUButton.Click += CPUButton_Click;
             // 
+            // OnlyCPUButton
+            // 
+            OnlyCPUButton.Location = new Point(200, 698);
+            OnlyCPUButton.Name = "OnlyCPUButton";
+            OnlyCPUButton.Size = new Size(200, 50);
+            OnlyCPUButton.TabIndex = 12;
+            OnlyCPUButton.Text = "ONLY CPU";
+            OnlyCPUButton.UseVisualStyleBackColor = true;
+            OnlyCPUButton.Click += OnlyCPUButton_Click;
+            // 
             // TicTacToe
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(600, 714);
+            ClientSize = new Size(600, 774);
+            Controls.Add(OnlyCPUButton);
             Controls.Add(CPUButton);
             Controls.Add(ResetButton);
             Controls.Add(WinningBar);
@@ -206,5 +218,6 @@
         private ProgressBar WinningBar;
         private Button ResetButton;
         private Button CPUButton;
+        private Button OnlyCPUButton;
     }
 }
