@@ -8,6 +8,7 @@ namespace TicTacToeBot
         private GameState<char[,]> BaseState;
         private MiniMaxTree<char[,]> BoardTree;
         private MiniMaxTree<char[,]> PrunedTree;
+        private MonteCarloTree<char[,]> MonteCarloTree;
 
         private char[,] CurrentGameBoard;
         private GameState<char[,]> CurrentGameState;
@@ -22,8 +23,6 @@ namespace TicTacToeBot
         private Point BottomMiddleButtonPoint;
         private Point BottomRightMiddlePoint;
 
-        private ExpectiMaxTree<char[,]> ExpectiMaxTree;
-
         private bool Pruning;
 
         public TicTacToe()
@@ -35,12 +34,14 @@ namespace TicTacToeBot
             BaseBoard = new char[3, 3] { { ' ', ' ', ' ' }, { ' ', ' ', ' ' }, { ' ', ' ', ' ' } };
             BaseState = new GameState<char[,]>(BaseBoard);
 
-            BoardTree = new(BaseState, PreviousPlayer);
-            BoardTree.GenerateTree(BaseState, PreviousPlayer);
+            //BoardTree = new(BaseState, PreviousPlayer);
+            //BoardTree.GenerateTree(BaseState, PreviousPlayer);
 
-            PrunedTree = new (BaseState, PreviousPlayer);
-            PrunedTree.GenerateTree(BaseState, PreviousPlayer);
-            Pruning = false;
+            //PrunedTree = new (BaseState, PreviousPlayer);
+            //PrunedTree.GenerateTree(BaseState, PreviousPlayer);
+            //Pruning = false;
+
+            MonteCarloTree = new(BaseState, PreviousPlayer);
 
             CurrentGameBoard = new char[3, 3] { { ' ', ' ', ' ' }, { ' ', ' ', ' ' }, { ' ', ' ', ' ' } };
             CurrentGameState = new GameState<char[,]>(CurrentGameBoard);
@@ -54,10 +55,6 @@ namespace TicTacToeBot
             BottomLeftButtonPoint = new Point(2, 0);
             BottomMiddleButtonPoint = new Point(2, 1);
             BottomRightMiddlePoint = new Point(2, 2);
-
-            //ExpectiMaxTree = new(BoardTree);
-            //ExpectiMaxTree.GenerateTree();
-            ;
         }
 
         private void PlayBotMove(GameState<char[,]>? move, EventArgs e)
@@ -166,20 +163,21 @@ namespace TicTacToeBot
         {
             Pruning = false;
 
-            GameState<char[,]>? winningCPUMove = BoardTree.FindWinningMove(CurrentGameState, PreviousPlayer == 'X' ? 'O' : 'X');
+            //GameState<char[,]>? winningCPUMove = BoardTree.FindWinningMove(CurrentGameState, PreviousPlayer == 'X' ? 'O' : 'X');
+            GameState<char[,]>? winningCPUMove = MonteCarloTree.MonteCarloTreeSearch(1000, CurrentGameState, new Random());
             PlayBotMove(winningCPUMove, e);
         }
 
         private void OnlyCPUButton_Click(object sender, EventArgs e)
         {
-            if (!Pruning)
-            {
-                ResetButton_Click(sender, e);
-            }
-            Pruning = true;
+            //if (!Pruning)
+            //{
+            //    ResetButton_Click(sender, e);
+            //}
+            //Pruning = true;
 
-            GameState<char[,]>? winningCPUMove = PrunedTree.FindWinningMove(CurrentGameState, PreviousPlayer == 'X' ? 'O' : 'X');
-            PlayBotMove(winningCPUMove, e);
+            //GameState<char[,]>? winningCPUMove = PrunedTree.FindWinningMove(CurrentGameState, PreviousPlayer == 'X' ? 'O' : 'X');
+            //PlayBotMove(winningCPUMove, e);
         }
     }
 }

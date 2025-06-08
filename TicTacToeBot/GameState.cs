@@ -13,8 +13,13 @@ namespace TicTacToeBot
         public List<GameState<T>> NextPossibleStates;
         public GameState<T>? ParentState;
         public int Score;
+
         public int Alpha;
         public int Beta;
+
+        public int W; //value of total state --> win count - loss count
+        public int N; //times this state or child states have ran
+        public double C;
 
         public char[,] TicTacToeBoard;
 
@@ -26,6 +31,10 @@ namespace TicTacToeBot
             ParentState = null;
             Score = 0;
 
+            W = 0; 
+            N = 0;
+            C = 1.5;
+
             TicTacToeBoard = new char[3, 3];
             for (int column = 0; column < 3; column++)
             {
@@ -34,6 +43,27 @@ namespace TicTacToeBot
                     TicTacToeBoard[column, row] = ticTacToeBoard[column, row];
                 }
             }         
+        }
+
+        public double UCT() => (W / N) + (C * Math.Sqrt(Math.Log(ParentState.N) / N));
+
+        public void GenerateChildren()
+        {
+            for (int column = 0; column < 3; column++)
+            {
+                for (int row = 0; row < 3; row++)
+                {
+                    GameState<T> nextGameState = new(TicTacToeBoard);
+
+                    if (nextGameState.TicTacToeBoard[column, row] == ' ')
+                    {
+                        nextGameState.TicTacToeBoard[column, row] = CurrentPlayer;
+
+                        nextGameState.ParentState = this;
+                        NextPossibleStates.Add(nextGameState);
+                    }
+                }
+            }
         }
 
         public int GetScore()
