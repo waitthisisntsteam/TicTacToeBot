@@ -45,7 +45,7 @@ namespace TicTacToeBot
             }         
         }
 
-        public double UCT() => (W / N) + (C * Math.Sqrt(Math.Log(ParentState.N) / N));
+        public double UCT() => N != 0 ? (W / N) + (C * Math.Sqrt(Math.Log(ParentState.N) / N)) : 0;
 
         public void GenerateChildren()
         {

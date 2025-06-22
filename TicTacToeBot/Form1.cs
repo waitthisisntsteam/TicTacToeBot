@@ -164,7 +164,7 @@ namespace TicTacToeBot
             Pruning = false;
 
             //GameState<char[,]>? winningCPUMove = BoardTree.FindWinningMove(CurrentGameState, PreviousPlayer == 'X' ? 'O' : 'X');
-            GameState<char[,]>? winningCPUMove = MonteCarloTree.MonteCarloTreeSearch(1000, CurrentGameState, new Random());
+            GameState<char[,]>? winningCPUMove = MonteCarloTree.MonteCarloTreeSearch(1000, CurrentGameState.TicTacToeBoard, new Random());
             PlayBotMove(winningCPUMove, e);
         }
 
