@@ -41,6 +41,7 @@
             ResetButton = new Button();
             CPUButton = new Button();
             OnlyCPUButton = new Button();
+            CPU_Monte = new Button();
             SuspendLayout();
             // 
             // TopLeftButton
@@ -165,13 +166,13 @@
             CPUButton.Name = "CPUButton";
             CPUButton.Size = new Size(200, 50);
             CPUButton.TabIndex = 11;
-            CPUButton.Text = "CPU";
+            CPUButton.Text = "CPU (MiniMax)";
             CPUButton.UseVisualStyleBackColor = true;
             CPUButton.Click += CPUButton_Click;
             // 
             // OnlyCPUButton
             // 
-            OnlyCPUButton.Location = new Point(200, 698);
+            OnlyCPUButton.Location = new Point(75, 698);
             OnlyCPUButton.Name = "OnlyCPUButton";
             OnlyCPUButton.Size = new Size(200, 50);
             OnlyCPUButton.TabIndex = 12;
@@ -179,11 +180,22 @@
             OnlyCPUButton.UseVisualStyleBackColor = true;
             OnlyCPUButton.Click += OnlyCPUButton_Click;
             // 
+            // CPU_Monte
+            // 
+            CPU_Monte.Location = new Point(325, 698);
+            CPU_Monte.Name = "CPU_Monte";
+            CPU_Monte.Size = new Size(200, 50);
+            CPU_Monte.TabIndex = 13;
+            CPU_Monte.Text = "CPU (MonteCarlo)";
+            CPU_Monte.UseVisualStyleBackColor = true;
+            CPU_Monte.Click += CPU_Monte_Click;
+            // 
             // TicTacToe
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(600, 774);
+            Controls.Add(CPU_Monte);
             Controls.Add(OnlyCPUButton);
             Controls.Add(CPUButton);
             Controls.Add(ResetButton);
@@ -219,5 +231,6 @@
         private Button ResetButton;
         private Button CPUButton;
         private Button OnlyCPUButton;
+        private Button CPU_Monte;
     }
 }

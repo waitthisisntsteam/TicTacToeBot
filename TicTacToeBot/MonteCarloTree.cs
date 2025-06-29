@@ -20,11 +20,6 @@ namespace TicTacToeBot
             Root = rootGameState;
             PreviousPlay = prevPlay;
 
-            AllGameStates = new();
-            AllGameStates.Add(Root);
-
-            LastDuplicateIndex = 0;
-
             //X = maximizer
             //O = minimizer
         }
@@ -57,7 +52,7 @@ namespace TicTacToeBot
 
                 foreach (var child in currentGameState.NextPossibleStates)
                 {
-                    double val = child.UCT();
+                    double val = child.UCTCalculate();
                     if (val > highestUCT)
                     {
                         highestUCT = val;
@@ -76,7 +71,7 @@ namespace TicTacToeBot
             return currentGameState;
         }
 
-        private GameState<T> Expand(GameState<T> currentGameState)
+        private GameState<T> Expand(GameState<T> currentGameState, Random random)
         {
             currentGameState.GenerateChildren();
 
@@ -84,18 +79,23 @@ namespace TicTacToeBot
             {
                 return currentGameState;
             }
-            return currentGameState.NextPossibleStates[0];
+            return currentGameState.NextPossibleStates[random.Next(0, currentGameState.NextPossibleStates.Count)];
         }
 
-        private int Simulate(GameState<T> currentGameState, Random random)
+        private int Simulate(GameState<T> currentGameState, Random random, out GameState<T> backPropFrom)
         {
-            while (currentGameState.NextPossibleStates.Count > 0)
+            while (currentGameState.GetScore() == 0)
             {
                 currentGameState.GenerateChildren();
+                if (currentGameState.NextPossibleStates.Count == 0)
+                {
+                    break;
+                }
                 int randomIndex = random.Next(0, currentGameState.NextPossibleStates.Count);
                 currentGameState = currentGameState.NextPossibleStates[randomIndex];
             }
 
+            backPropFrom = currentGameState;
             return currentGameState.GetScore();
         }
 
@@ -103,7 +103,7 @@ namespace TicTacToeBot
         {
             GameState<T>? currentGameState = simulatedGameState;
 
-            while (AreBoardsEqual(currentGameState.TicTacToeBoard, rootNode))
+            while (!AreBoardsEqual(currentGameState.TicTacToeBoard, rootNode))
             {
                 value = -value;
                 currentGameState.N++;
@@ -120,21 +120,10 @@ namespace TicTacToeBot
             for (int i = 0; i < iterations; i++)
             {
                 var selectedNode = Select(rootNode);
-                var expandedChild = Expand(selectedNode);
-                int value = Simulate(expandedChild, random);
-                if (value == 0)
-                {
-                    ;
-                }
-                else if (value == -1)
-                {
-                    ;
-                }
-                else if (value == 1)
-                {
-                    ;
-                }
-                Backpropagate(expandedChild, value, rootNode.TicTacToeBoard);
+                var expandedChild = Expand(selectedNode, random);
+                var backPropFrom = expandedChild;
+                int value = Simulate(expandedChild, random, out backPropFrom);
+                Backpropagate(backPropFrom, value, rootNode.TicTacToeBoard);
             }
 
             var sortedChildren = rootNode.NextPossibleStates.OrderByDescending((state) => state.W);
@@ -142,8 +131,7 @@ namespace TicTacToeBot
             {
                 sortedChildren.Reverse();
             }
-            var topChild = sortedChildren.First();
-            return topChild;
+            return sortedChildren.First();
         }
     }
 }

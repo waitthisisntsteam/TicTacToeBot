@@ -21,6 +21,8 @@ namespace TicTacToeBot
         public int N; //times this state or child states have ran
         public double C;
 
+        public double UCT => UCTCalculate();
+
         public char[,] TicTacToeBoard;
 
         public char CurrentPlayer => GetPlayer();
@@ -45,10 +47,15 @@ namespace TicTacToeBot
             }         
         }
 
-        public double UCT() => N != 0 ? (W / N) + (C * Math.Sqrt(Math.Log(ParentState.N) / N)) : 0;
+        public double UCTCalculate() => N != 0 ? (W / N) + (C * Math.Sqrt(Math.Log(ParentState.N) / N)) : 0;
 
         public void GenerateChildren()
         {
+            if (NextPossibleStates.Count != 0)
+            {
+                return;
+            }
+
             for (int column = 0; column < 3; column++)
             {
                 for (int row = 0; row < 3; row++)
